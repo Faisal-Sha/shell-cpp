@@ -82,7 +82,9 @@ int main() {
       continue;
     } else if(tokens[0] == "pwd") {
       // Get and print the current working directory
-      cout << filesystem::current_path() << "\n";
+      string cwd = filesystem::current_path();
+      string res = cwd.substr(0, cwd.length());
+      cout << res << "\n";
     }
 
     // Handle external commands
