@@ -67,7 +67,7 @@ int main() {
       }
       continue;
     } else if (tokens[0] == "type") {
-      if (tokens.size() > 1 && (tokens[1] == "echo" || tokens[1] == "exit" || tokens[1] == "type")) {
+      if (tokens.size() > 1 && (tokens[1] == "echo" || tokens[1] == "exit" || tokens[1] == "type" || tokens[1] == "pwd")) {
         cout << tokens[1] << " is a shell builtin\n";
       } else if (tokens.size() > 1) {
         string path = get_path(tokens[1]);
