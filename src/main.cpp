@@ -90,6 +90,17 @@ int main() {
       if (tokens.size() > 1) {
         string path = tokens[1];
 
+        // Handle '~' for home directory
+        if (path[0] == '~') {
+          const char* home_dir = getenv("HOME");
+          if (home_dir) {
+            path.replace(0, 1, home_dir);  // Replace ~ with the home directory path
+          } else {
+            cerr << "cd: HOME not set\n";
+            continue;
+          }
+        }
+
         // Handle absolute paths
         if (path[0] == '/') {
           if (filesystem::exists(path) && filesystem::is_directory(path)) {
