@@ -63,29 +63,32 @@ int main() {
     // Handle built-in commands
     if (tokens[0] == "echo") {
       for (size_t i = 1; i < tokens.size(); ++i) {
-        std::cout << tokens[i] << (i == tokens.size() - 1 ? "\n" : " ");
+        cout << tokens[i] << (i == tokens.size() - 1 ? "\n" : " ");
       }
       continue;
     } else if (tokens[0] == "type") {
       if (tokens.size() > 1 && (tokens[1] == "echo" || tokens[1] == "exit" || tokens[1] == "type")) {
-        std::cout << tokens[1] << " is a shell builtin\n";
+        cout << tokens[1] << " is a shell builtin\n";
       } else if (tokens.size() > 1) {
-        std::string path = get_path(tokens[1]);
+        string path = get_path(tokens[1]);
         if (path.empty()) {
-          std::cout << tokens[1] << ": not found\n";
+          cout << tokens[1] << ": not found\n";
         } else {
-          std::cout << tokens[1] << " is " << path << "\n";
+          cout << tokens[1] << " is " << path << "\n";
         }
       } else {
-        std::cerr << "type: missing operand\n";
+        cerr << "type: missing operand\n";
       }
       continue;
+    } else if(tokens[0] == "pwd") {
+      // Get and print the current working directory
+      cout << filesystem::current_path() << "\n";
     }
 
     // Handle external commands
-    std::string program_path = get_path(tokens[0]);
+    string program_path = get_path(tokens[0]);
     if (program_path.empty()) {
-      std::cout << tokens[0] << ": command not found\n";
+      cout << tokens[0] << ": command not found\n";
       continue;
     }
 
@@ -93,7 +96,7 @@ int main() {
     pid_t pid = fork();
     if (pid == 0) {
       // Child process
-      std::vector<char *> args;
+      vector<char *> args;
       for (const auto &token : tokens) {
         args.push_back(const_cast<char *>(token.c_str()));
       }
@@ -102,7 +105,7 @@ int main() {
       // Replace the current process image with the program
       execvp(program_path.c_str(), args.data());
       // If execvp fails
-      std::cerr << "Error: Failed to execute " << program_path << "\n";
+      cerr << "Error: Failed to execute " << program_path << "\n";
       exit(1);
     } else if (pid > 0) {
       // Parent process
@@ -110,7 +113,7 @@ int main() {
       waitpid(pid, &status, 0); // Wait for the child process to finish
     } else {
       // Fork failed
-      std::cerr << "Error: Failed to fork process\n";
+      cerr << "Error: Failed to fork process\n";
     }
   }
 }
