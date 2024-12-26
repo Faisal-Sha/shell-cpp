@@ -85,6 +85,7 @@ int main() {
       string cwd = filesystem::current_path();
       string res = cwd.substr(0, cwd.length());
       cout << res << "\n";
+      continue;
     }
 
     // Handle external commands
