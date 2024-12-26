@@ -98,7 +98,23 @@ int main() {
             cerr << "cd: " << path << ": No such file or directory\n";
           }
         } else {
-          cerr << "cd: invalid argument\n";
+          // Handle relative paths
+          try {
+            // Get the current working directory
+            string current_dir = filesystem::current_path();
+            
+            // Combine it with the relative path to get the full path
+            filesystem::path full_path = filesystem::path(current_dir) / path;
+            
+            // Check if the resolved path exists and is a directory
+            if (filesystem::exists(full_path) && filesystem::is_directory(full_path)) {
+              filesystem::current_path(full_path); // Change the current directory
+            } else {
+              cerr << "cd: " << full_path << ": No such file or directory\n";
+            }
+          } catch (const filesystem::filesystem_error &e) {
+            cerr << "cd: " << e.what() << "\n";
+          }
         }
       } else {
         cerr << "cd: missing operand\n";
