@@ -86,6 +86,24 @@ int main() {
       string res = cwd.substr(0, cwd.length());
       cout << res << "\n";
       continue;
+    } else if (tokens[0] == "cd") {
+      if (tokens.size() > 1) {
+        string path = tokens[1];
+
+        // Handle absolute paths
+        if (path[0] == '/') {
+          if (filesystem::exists(path) && filesystem::is_directory(path)) {
+            filesystem::current_path(path); // Change the current directory
+          } else {
+            cerr << "cd: " << path << ": No such file or directory\n";
+          }
+        } else {
+          cerr << "cd: invalid argument\n";
+        }
+      } else {
+        cerr << "cd: missing operand\n";
+      }
+      continue;
     }
 
     // Handle external commands
