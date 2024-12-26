@@ -12,7 +12,7 @@ int main() {
     std::string input;
     std::getline(std::cin, input);
     if(input=="exit 0") return 0;
-    if(input.find("echo ")) {
+    if(input.find("echo ")==0) {
       std::string text = input.substr(5);
       std::cout << text << "\n";
     } else {
