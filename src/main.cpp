@@ -48,7 +48,7 @@ int main() {
         if(path.empty()) {
           std::cout << text << ": not found\n";
         } else {
-          std::cout<< text.substr(5) << " is " << path << "\n";
+          std::cout<< text << " is " << path << "\n";
         }
       }
     } else {
