@@ -22,8 +22,7 @@ vector<string> split(const string &input) {
     string token;
     if (input[i] == '\'')
     {
-      // Handle single quotes
-      ++i; // Skip opening quote
+      ++i; // Skip opening single quote
       while (i < input.length() && input[i] != '\'')
       {
         token += input[i++];
@@ -33,12 +32,11 @@ vector<string> split(const string &input) {
         cerr << "Error: unmatched single quote\n";
         return {};
       }
-      ++i; // Skip closing quote
+      ++i; // Skip closing single quote
     }
     else if (input[i] == '"')
     {
-      // Handle double quotes with backslashes
-      ++i; // Skip opening quote
+      ++i; // Skip opening double quote
       while (i < input.length() && input[i] != '"')
       {
         if (input[i] == '\\' && i + 1 < input.length())
@@ -66,11 +64,10 @@ vector<string> split(const string &input) {
         cerr << "Error: unmatched double quote\n";
         return {};
       }
-      ++i; // Skip closing quote
+      ++i; // Skip closing double quote
     }
     else
     {
-      // Handle unquoted tokens and backslashes
       while (i < input.length() && !isspace(input[i]))
       {
         if (input[i] == '\\' && i + 1 < input.length())
