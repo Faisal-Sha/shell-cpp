@@ -12,26 +12,59 @@ using namespace std;
 vector<string> split(const string &input) {
   vector<string> tokens;
   size_t i = 0;
-  while (i < input.length()) {
-    if (isspace(input[i])) {
+  while (i < input.length())
+  {
+    if (isspace(input[i]))
+    {
       ++i; // Skip whitespace
       continue;
     }
-    if (input[i] == '\'') {
-      // Handle single-quoted strings
+    if (input[i] == '\'')
+    {
+      // Handle single quotes
       size_t end = input.find('\'', i + 1);
-      if (end == string::npos) {
-          cerr << "Error: unmatched single quote\n";
-          return {};
+      if (end == string::npos)
+      {
+        cerr << "Error: unmatched single quote\n";
+        return {};
       }
-      tokens.push_back(input.substr(i + 1, end - i - 1)); // Extract the quoted text
+      tokens.push_back(input.substr(i + 1, end - i - 1));
       i = end + 1; // Move past the closing quote
-    } else {
-      // Handle regular tokens
+    }
+    else if (input[i] == '"')
+    {
+      // Handle double quotes
+      string token;
+      ++i; // Skip opening quote
+      while (i < input.length() && input[i] != '"')
+      {
+        if (input[i] == '\\' && i + 1 < input.length() &&
+            (input[i + 1] == '\\' || input[i + 1] == '"' || input[i + 1] == '$' || input[i + 1] == '\n'))
+        {
+          token += input[++i]; // Add escaped character
+        }
+        else
+        {
+          token += input[i];
+        }
+        ++i;
+      }
+      if (i == input.length() || input[i] != '"')
+      {
+        cerr << "Error: unmatched double quote\n";
+        return {};
+      }
+      tokens.push_back(token);
+      ++i; // Move past the closing quote
+    }
+    else
+    {
+      // Handle unquoted tokens
       size_t end = input.find_first_of(" \t", i);
-      if (end == string::npos) {
-          tokens.push_back(input.substr(i));
-          break;
+      if (end == string::npos)
+      {
+        tokens.push_back(input.substr(i));
+        break;
       }
       tokens.push_back(input.substr(i, end - i));
       i = end;
@@ -162,7 +195,6 @@ int main() {
             cerr << "cat: " << tokens[i] << ": No such file or directory\n";
           }
       }
-      // cout << endl;
       continue;
     }
 
