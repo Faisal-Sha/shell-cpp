@@ -37,14 +37,23 @@ vector<string> split(const string &input) {
     }
     else if (input[i] == '"')
     {
-      // Handle double quotes
+      // Handle double quotes with backslashes
       ++i; // Skip opening quote
       while (i < input.length() && input[i] != '"')
       {
-        if (input[i] == '\\' && i + 1 < input.length() &&
-            (input[i + 1] == '\\' || input[i + 1] == '"' || input[i + 1] == '$' || input[i + 1] == '\n'))
+        if (input[i] == '\\' && i + 1 < input.length())
         {
-          token += input[++i]; // Add escaped character
+          // Handle escaped characters inside double quotes
+          char next_char = input[i + 1];
+          if (next_char == '\\' || next_char == '$' || next_char == '"' || next_char == '\n')
+          {
+            token += next_char; // Add the escaped character
+            ++i;                // Skip the backslash
+          }
+          else
+          {
+            token += '\\'; // Treat backslash as literal
+          }
         }
         else
         {
