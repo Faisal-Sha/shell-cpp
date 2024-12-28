@@ -13,55 +13,60 @@ vector<string> split(const string &input) {
   vector<string> tokens;
   size_t i = 0;
   while (i < input.length()) {
-        if (isspace(input[i])) {
-            ++i; // Skip whitespace
-            continue;
-        }
-        string token;
-        if (input[i] == '\'') {
-            ++i; // Skip opening single quote
-            while (i < input.length() && input[i] != '\'') {
-                token += input[i++];
-            }
-            if (i == input.length() || input[i] != '\'') {
-                cerr << "Error: unmatched single quote\n";
-                return {};
-            }
-            ++i; // Skip closing single quote
-        } else if (input[i] == '"') {
-            ++i; // Skip opening double quote
-            while (i < input.length() && input[i] != '"') {
-                if (input[i] == '\\' && i + 1 < input.length()) {
-                    // Handle escaped characters inside double quotes
-                    char next_char = input[i + 1];
-                    if (next_char == '\\' || next_char == '$' || next_char == '"' || next_char == '\n') {
-                        token += next_char; // Add the escaped character
-                        ++i; // Skip the backslash
-                    } else {
-                        token += '\\'; // Treat backslash as literal
-                    }
-                } else {
-                    token += input[i];
-                }
-                ++i;
-            }
-            if (i == input.length() || input[i] != '"') {
-                cerr << "Error: unmatched double quote\n";
-                return {};
-            }
-            ++i; // Skip closing double quote
-        } else {
-            while (i < input.length() && !isspace(input[i])) {
-                if (input[i] == '\\' && i + 1 < input.length()) {
-                    token += input[++i]; // Add escaped character
-                } else {
-                    token += input[i];
-                }
-                ++i;
-            }
-        }
-        tokens.push_back(token);
+    if (isspace(input[i])) {
+      ++i; // Skip whitespace
+      continue;
     }
+    string token;
+    if (input[i] == '\'') {
+      ++i; // Skip opening single quote
+      while (i < input.length() && input[i] != '\'') {
+        token += input[i++];
+      }
+      if (i == input.length() || input[i] != '\'') {
+        cerr << "Error: unmatched single quote\n";
+        return {};
+      }
+      ++i; // Skip closing single quote
+    } else if (input[i] == '"') {
+      ++i; // Skip opening double quote
+      while (i < input.length() && input[i] != '"') {
+        if (input[i] == '\\' && i + 1 < input.length()) {
+          // Handle escaped characters inside double quotes
+          char next_char = input[i + 1];
+          if (next_char == '\\' || next_char == '$' || next_char == '"' || next_char == '\n') {
+            token += next_char; // Add the escaped character
+            ++i;                // Skip the backslash
+          } else {
+            token += '\\'; // Treat backslash as literal if not special
+          }
+        } else {
+          token += input[i]; // Add normal characters
+        }
+        ++i;
+      }
+
+      // Handle trailing backslash if necessary
+      if (i < input.length() && input[i] == '\\') {
+        token += '\\';
+      }
+      // if (i == input.length() || input[i] != '"') {
+      //   cerr << "Error: unmatched double quote\n";
+      //   return {};
+      // }
+      ++i; // Skip closing double quote
+    } else {
+      while (i < input.length() && !isspace(input[i])) {
+        if (input[i] == '\\' && i + 1 < input.length()) {
+          token += input[++i]; // Add escaped character
+        } else {
+          token += input[i];
+        }
+        ++i;
+      }
+    }
+    tokens.push_back(token);
+  }
   return tokens;
 };
 
