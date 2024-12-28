@@ -4,18 +4,40 @@
 #include <filesystem>
 #include <vector>
 #include <sys/wait.h>
+#include <fstream> // For file reading
 
 using namespace std;
 
 // Function to split a string into tokens
-vector<string> split(const string &str) {
-    vector<string> tokens;
-    stringstream ss(str);
-    string token;
-    while (ss >> token) {
-        tokens.push_back(token);
+vector<string> split(const string &input) {
+  vector<string> tokens;
+  size_t i = 0;
+  while (i < input.length()) {
+    if (isspace(input[i])) {
+      ++i; // Skip whitespace
+      continue;
     }
-    return tokens;
+    if (input[i] == '\'') {
+      // Handle single-quoted strings
+      size_t end = input.find('\'', i + 1);
+      if (end == string::npos) {
+          cerr << "Error: unmatched single quote\n";
+          return {};
+      }
+      tokens.push_back(input.substr(i + 1, end - i - 1)); // Extract the quoted text
+      i = end + 1; // Move past the closing quote
+    } else {
+      // Handle regular tokens
+      size_t end = input.find_first_of(" \t", i);
+      if (end == string::npos) {
+          tokens.push_back(input.substr(i));
+          break;
+      }
+      tokens.push_back(input.substr(i, end - i));
+      i = end;
+    }
+  }
+  return tokens;
 };
 
 string get_path(string cmd) {
@@ -130,6 +152,17 @@ int main() {
       } else {
         cerr << "cd: missing operand\n";
       }
+      continue;
+    } else if (tokens[0] == "cat") {
+      for (size_t i = 1; i < tokens.size(); ++i) {
+          ifstream file(tokens[i]);
+          if (file) {
+            cout << file.rdbuf(); // Output file content
+          } else {
+            cerr << "cat: " << tokens[i] << ": No such file or directory\n";
+          }
+      }
+      cout << endl;
       continue;
     }
 
