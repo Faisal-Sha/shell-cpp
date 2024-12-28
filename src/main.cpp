@@ -162,7 +162,7 @@ int main() {
             cerr << "cat: " << tokens[i] << ": No such file or directory\n";
           }
       }
-      cout << endl;
+      // cout << endl;
       continue;
     }
 
